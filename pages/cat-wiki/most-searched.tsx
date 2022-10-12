@@ -42,12 +42,21 @@ export default function MostSearched({ breeds }: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data } = await axios.get(`${process.env.URL}api/breeds/most-searched`)
-  const breeds: MostSearchedBreeds[] = data.breeds;
+  const breeds: any = await axios.get(`https://api.thecatapi.com/v1/breeds?limit=10`, {
+    headers: {
+      'x-api-key': process.env.CAT_API_KEY
+    }
+  });
+  const mostSearched = breeds.data.map((breed: any) => ({
+    id: breed.id,
+    name: breed.name,
+    description: breed.description,
+    image: breed.image.url,
+  }));
 
   return {
     props: {
-      breeds
+      breeds: mostSearched
     }
   }
 }
